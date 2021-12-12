@@ -21,12 +21,12 @@ class AddStudentForm(forms.Form):
                               widget=forms.TextInput(attrs={'class': 'form-control'}))
     courses = Courses.objects.all()
     courseList = []
-    # try:
-    for course in courses:
-        single_course = (course.id, course.course_name)
-        courseList.append(single_course)
-    # except:
-    #     courseList = []
+    try:
+        for course in courses:
+            single_course = (course.id, course.course_name)
+            courseList.append(single_course)
+    except:
+        courseList = []
     course = forms.ChoiceField(label="Course", choices=courseList,
                                widget=forms.Select(attrs={'class': 'form-control'}))
     gender = (
@@ -34,14 +34,14 @@ class AddStudentForm(forms.Form):
         ("Female", "Female")
     )
     sessionList = []
-    # try:
-    sessions = SessionYearModel.objects.all()
-    for session in sessions:
-        smallSession = (
-            session.id, str(session.session_start_year)+"-"+str(session.session_end_year))
-        sessionList.append(smallSession)
-    # except:
-    #     sessionList = []
+    try:
+        sessions = SessionYearModel.objects.all()
+        for session in sessions:
+            smallSession = (
+                session.id, str(session.session_start_year)+"-"+str(session.session_end_year))
+            sessionList.append(smallSession)
+    except:
+        sessionList = []
     sex = forms.ChoiceField(choices=gender, label="Sex",
                             widget=forms.Select(attrs={'class': 'form-control'}))
     session_year_id = forms.ChoiceField(label="Session Year", choices=sessionList,
@@ -63,12 +63,12 @@ class EditStudentForm(forms.Form):
                               widget=forms.TextInput(attrs={'class': 'form-control'}))
     courses = Courses.objects.all()
     courseList = []
-    # try:
-    for course in courses:
-        single_course = (course.id, course.course_name)
-        courseList.append(single_course)
-    # except:
-    #     courseList = []
+    try:
+        for course in courses:
+            single_course = (course.id, course.course_name)
+            courseList.append(single_course)
+    except:
+        courseList = []
     course = forms.ChoiceField(label="Course", choices=courseList,
                                widget=forms.Select(attrs={'class': 'form-control'}))
     gender = (
@@ -76,14 +76,14 @@ class EditStudentForm(forms.Form):
         ("Female", "Female")
     )
     sessionList = []
-    # try:
-    sessions = SessionYearModel.objects.all()
-    for session in sessions:
-        smallSession = (
-            session.id, str(session.session_start_year)+"-"+str(session.session_end_year))
-        sessionList.append(smallSession)
-    # except:
-    #     sessionList = []
+    try:
+        sessions = SessionYearModel.objects.all()
+        for session in sessions:
+            smallSession = (
+                session.id, str(session.session_start_year)+"-"+str(session.session_end_year))
+            sessionList.append(smallSession)
+    except:
+        sessionList = []
     sex = forms.ChoiceField(choices=gender, label="Sex",
                             widget=forms.Select(attrs={'class': 'form-control'}))
     session_year_id = forms.ChoiceField(label="Session Year", choices=sessionList,
