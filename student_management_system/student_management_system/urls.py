@@ -80,7 +80,15 @@ urlpatterns = [
          HodViews.staff_leave_approve, name="staff_leave_approve"),
     path('staff_leave_reject/<leave_id>/',
          HodViews.staff_leave_reject, name="staff_leave_reject"),
-
+    path('admin_view_attendance/', HodViews.admin_view_attendance,
+         name="admin_view_attendance"),
+    path('admin_get_attendance_dates/', HodViews.admin_get_attendance_dates,
+         name="admin_get_attendance_dates"),
+    path('admin_get_attendance_student/', HodViews.admin_get_attendance_student,
+         name="admin_get_attendance_student"),
+    path('admin_profile/', HodViews.admin_profile, name="admin_profile"),
+    path('admin_profile_update/', HodViews.admin_profile_update,
+         name="admin_profile_update"),
 
 
     #   staff url path
@@ -106,6 +114,12 @@ urlpatterns = [
          name="staff_feedback"),
     path('staff_feedback_save', StaffViews.staff_feedback_save,
          name="staff_feedback_save"),
+    path('staff_profile/', StaffViews.staff_profile, name="staff_profile"),
+    path('staff_profile_update/', StaffViews.staff_profile_update,
+         name="staff_profile_update"),
+    path('staff_add_result/', StaffViews.staff_add_result, name="staff_add_result"),
+    path('staff_add_result_save/', StaffViews.staff_add_result_save,
+         name="staff_add_result_save"),
 
     #   student url path
     path('student_home/', StudentViews.student_home, name='student_home'),
@@ -121,5 +135,8 @@ urlpatterns = [
          name="student_feedback"),
     path('student_feedback_save', StudentViews.student_feedback_save,
          name="student_feedback_save"),
+    path('student_profile/', StudentViews.student_profile, name="student_profile"),
+    path('student_profile_update/', StudentViews.student_profile_update,
+         name="student_profile_update"),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

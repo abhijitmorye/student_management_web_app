@@ -15,7 +15,7 @@
         <img src="{% static "dist/img/user2-160x160.jpg" %}" class="img-circle elevation-2" alt="User Image">
       </div>
       <div class="info">
-        <a href="#" class="d-block">{{ user.username }}</a>
+        <a href="{% url 'admin_profile' %}" class="d-block">{{ user.username }}</a>
       </div>
     </div>
 
@@ -158,11 +158,11 @@
           </a>
         </li>
         <li class="nav-item">
-          <a href="{% url 'add_staff' %}" class="nav-link">
-            <i class="nav-icon fas fa-th"></i>
+          {% url 'admin_view_attendance' as admin_view_attendance %}
+          <a href="{{ admin_view_attendance }}" class="nav-link {% if request.path == admin_view_attendance %} active {% endif %}">
+            <i class="nav-icon fas fa-calendar-alt"></i>
             <p>
               View Attendance
-              <!-- <span class="right badge badge-danger">New</span> -->
             </p>
           </a>
         </li>
