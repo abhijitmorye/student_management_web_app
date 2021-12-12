@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import SessionYearModel, Subjects, Students, Attendance, AttendanceReport, LeaveReportStaffs, Staffs, FeedbackStaffs, CustomUser
+from .models import SessionYearModel, Subjects, Students, Attendance, AttendanceReport, LeaveReportStaffs, Staffs, FeedbackStaffs, CustomUser, StudentResult, Courses
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.core import serializers
@@ -9,7 +9,67 @@ from django.contrib import messages
 
 
 def staff_home(request):
-    return render(request, 'staff_template/staff_home_template.html')
+    # Fetching All Students under Staff
+
+    subjects = Subjects.objects.filter(staff_id=request.user.id)
+    course_id_list = []
+    for subject in subjects:
+        course = Courses.objects.get(id=subject.course_id.id)
+        course_id_list.append(course.id)
+
+    final_course = []
+    # Removing Duplicate Course Id
+    for course_id in course_id_list:
+        if course_id not in final_course:
+            final_course.append(course_id)
+
+    students_count = Students.objects.filter(
+        course__in=final_course).count()
+    subject_count = subjects.count()
+
+    # Fetch All Attendance Count
+    attendance_count = Attendance.objects.filter(
+        subject_id__in=subjects).count()
+    # Fetch All Approve Leave
+    staff = Staffs.objects.get(admin=request.user.id)
+    leave_count = LeaveReportStaffs.objects.filter(
+        staff_if=staff.id, leave_status=1).count()
+
+    # Fetch Attendance Data by Subjects
+    subject_list = []
+    attendance_list = []
+    for subject in subjects:
+        attendance_count1 = Attendance.objects.filter(
+            subject_id=subject.id).count()
+        subject_list.append(subject.subjects_name)
+        attendance_list.append(attendance_count1)
+
+    students_attendance = Students.objects.filter(course__in=final_course)
+    student_list = []
+    student_list_attendance_present = []
+    student_list_attendance_absent = []
+    for student in students_attendance:
+        attendance_present_count = AttendanceReport.objects.filter(
+            status=True, student_id=student.id).count()
+        attendance_absent_count = AttendanceReport.objects.filter(
+            status=False, student_id=student.id).count()
+        student_list.append(student.admin.first_name +
+                            " " + student.admin.last_name)
+        student_list_attendance_present.append(attendance_present_count)
+        student_list_attendance_absent.append(attendance_absent_count)
+
+    context = {
+        "students_count": students_count,
+        "attendance_count": attendance_count,
+        "leave_count": leave_count,
+        "subject_count": subject_count,
+        "subject_list": subject_list,
+        "attendance_list": attendance_list,
+        "student_list": student_list,
+        "attendance_present_list": student_list_attendance_present,
+        "attendance_absent_list": student_list_attendance_absent
+    }
+    return render(request, "staff_template/staff_home_template.html", context)
 
 
 def staff_take_attendance(request):
@@ -261,13 +321,13 @@ def staff_add_result_save(request):
                 result.subject_exam_marks = exam_marks
                 result.save()
                 messages.success(request, "Result Updated Successfully!")
-                return redirect('staff_add_result')
+                return HttpResponseRedirect(reverse('staff_add_result'))
             else:
                 result = StudentResult(student_id=student_obj, subject_id=subject_obj,
                                        subject_exam_marks=exam_marks, subject_assignment_marks=assignment_marks)
                 result.save()
                 messages.success(request, "Result Added Successfully!")
-                return redirect('staff_add_result')
+                return HttpResponseRedirect(reverse('staff_add_result'))
         except:
             messages.error(request, "Failed to Add Result!")
-            return redirect('staff_add_result')
+            return HttpResponseRedirect(reverse('staff_add_result'))
